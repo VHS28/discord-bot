@@ -1,5 +1,5 @@
 export type AppEnv = {
-  databaseUrl: any;
+  databaseUrl: string;
   discordBotToken: string;
   discordClientId: string;
   discordGuildId: string;
@@ -37,13 +37,11 @@ function readPort(source: NodeJS.ProcessEnv): number {
 
 export function loadEnv(source: NodeJS.ProcessEnv = process.env): AppEnv {
   return {
-  discordBotToken: requireValue(source, "DISCORD_BOT_TOKEN"),
-  discordClientId: requireValue(source, "DISCORD_CLIENT_ID"),
-  discordGuildId: requireValue(source, "DISCORD_GUILD_ID"),
-  host: source.HOST ?? "127.0.0.1",
-  port: readPort(source),
-  databaseUrl:
-  source.DATABASE_URL ??
-  "file:./data/discord-status.sqlite",
-};
+    discordBotToken: requireValue(source, "DISCORD_BOT_TOKEN"),
+    discordClientId: requireValue(source, "DISCORD_CLIENT_ID"),
+    discordGuildId: requireValue(source, "DISCORD_GUILD_ID"),
+    host: source.HOST ?? "127.0.0.1",
+    port: readPort(source),
+    databaseUrl: source.DATABASE_URL ?? "file:./data/discord-status.sqlite",
+  };
 }
