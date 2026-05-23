@@ -18,8 +18,8 @@ export function getRecentPublicMemberEvents(
 ): PublicMemberEvent[] {
   const statement = db.prepare(`
     SELECT
-      type,
-      display_name,
+      event_type,
+      display_name_snapshot,
       occurred_at
     FROM member_events
     ORDER BY occurred_at DESC
@@ -27,14 +27,14 @@ export function getRecentPublicMemberEvents(
   `);
 
   const rows = statement.all(limit) as {
-    type: "join" | "leave";
-    display_name: string;
+    event_type: "join" | "leave";
+    display_name_snapshot: string;
     occurred_at: string;
   }[];
 
   return rows.map((row) => ({
-    type: row.type,
-    displayName: row.display_name,
+    type: row.event_type,
+    displayName: row.display_name_snapshot,
     occurredAt: row.occurred_at,
   }));
 }
