@@ -1,12 +1,24 @@
 import "dotenv/config";
-import { initDatabase } from "./database/initDatabase.js";
+
+import { createServer } from "./api/createServer.js";
 import { createDiscordClient } from "./bot/client.js";
+import { registerMemberEventHandlers } from "./bot/memberEventHandlers.js";
 import { EnvValidationError, loadEnv } from "./config/env.js";
-import { createServer } from './api/createServer.js';
+import { initDatabase } from "./database/initDatabase.js";
 
 async function main(): Promise<void> {
   const env = loadEnv();
+
+  initDatabase();
+
+  const server = createServer();
+  await server.listen({
+    host: env.host,
+    port: env.port,
+  });
+
   const client = createDiscordClient();
+  registerMemberEventHandlers(client);
 
   client.once("ready", (readyClient) => {
     console.log(`Discord bot logged in as ${readyClient.user.tag}`);
@@ -14,14 +26,6 @@ async function main(): Promise<void> {
 
   await client.login(env.discordBotToken);
 }
-initDatabase();
-
-const server = createServer();
-
-await server.listen({
-  host: '0.0.0.0',
-  port: 3000,
-});
 
 main().catch((error: unknown) => {
   if (error instanceof EnvValidationError) {
@@ -30,7 +34,7 @@ main().catch((error: unknown) => {
     return;
   }
 
-  console.error("Failed to start Discord bot");
+  console.error("Failed to start Discord bot or API server");
   console.error(error);
   process.exitCode = 1;
 });
