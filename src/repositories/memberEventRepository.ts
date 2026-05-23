@@ -1,16 +1,16 @@
 import { db } from "../database/database.js";
 
+export type MemberEventType = "join" | "leave";
+
 export interface MemberEventRecord {
-  eventType: "join" | "leave";
+  eventType: MemberEventType;
   displayNameSnapshot: string;
   discordUserIdHash: string;
   occurredAt: string;
   guildId: string;
 }
 
-export function saveMemberEvent(
-  event: MemberEventRecord,
-): void {
+export function saveMemberEvent(event: MemberEventRecord): void {
   db.prepare(`
     INSERT INTO member_events (
       event_type,
