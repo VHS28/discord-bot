@@ -1,23 +1,24 @@
-import type { GuildMember } from "discord.js";
+import type { GuildMember, PartialGuildMember } from "discord.js";
+import type { MemberEventType } from "../repositories/memberEventRepository.js";
 import { hashDiscordId } from "./hashDiscordId.js";
 
 export interface NormalizedMemberEvent {
-  event: string;
-  username: string;
-  timestamp: string;
+  eventType: MemberEventType;
+  displayNameSnapshot: string;
+  occurredAt: string;
   discordUserIdHash: string;
   guildId: string;
 }
 
 export function normalizeMemberEvent(
-  event: string,
-  member: GuildMember,
+  eventType: MemberEventType,
+  member: GuildMember | PartialGuildMember,
 ): NormalizedMemberEvent {
   return {
-    event,
-    username: member.user.username,
-    timestamp: new Date().toISOString(),
-    discordUserIdHash: hashDiscordId(member.id),
+    eventType,
+    displayNameSnapshot: member.displayName?.trim() || member.user.username,
+    occurredAt: new Date().toISOString(),
+    discordUserIdHash: hashDiscordId(member.user.id),
     guildId: member.guild.id,
   };
 }
