@@ -2,6 +2,7 @@ import "dotenv/config";
 import { initDatabase } from "./database/initDatabase.js";
 import { createDiscordClient } from "./bot/client.js";
 import { EnvValidationError, loadEnv } from "./config/env.js";
+import { createServer } from './api/createServer.js';
 
 async function main(): Promise<void> {
   const env = loadEnv();
@@ -14,6 +15,14 @@ async function main(): Promise<void> {
   await client.login(env.discordBotToken);
 }
 initDatabase();
+
+const server = createServer();
+
+await server.listen({
+  host: '0.0.0.0',
+  port: 3000,
+});
+
 main().catch((error: unknown) => {
   if (error instanceof EnvValidationError) {
     console.error(error.message);
