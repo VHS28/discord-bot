@@ -1,4 +1,5 @@
 import type { GuildMember } from "discord.js";
+import { hashDiscordId } from "./hashDiscordId.js";
 
 export interface NormalizedMemberEvent {
   event: string;

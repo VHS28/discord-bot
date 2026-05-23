@@ -25,6 +25,7 @@ describe("loadEnv", () => {
       discordGuildId: "guild-id",
       host: "127.0.0.1",
       port: 3000,
+      databaseUrl: "file:./data/discord-status.sqlite",
     });
   });
 });
