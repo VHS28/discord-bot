@@ -5,6 +5,8 @@ export interface NormalizedMemberEvent {
   event: string;
   username: string;
   timestamp: string;
+  discordUserIdHash: string;
+  guildId: string;
 }
 
 export function normalizeMemberEvent(
@@ -15,5 +17,7 @@ export function normalizeMemberEvent(
     event,
     username: member.user.username,
     timestamp: new Date().toISOString(),
+    discordUserIdHash: hashDiscordId(member.id),
+    guildId: member.guild.id,
   };
 }
