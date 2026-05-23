@@ -36,6 +36,7 @@ Der Bot soll Beitritte und Austritte aus einem Discord-Testserver erfassen. Die 
 - Adminbereich nur authentifiziert bereitstellen.
 - Bot-Rechte minimal halten.
 - Keine automatischen Moderationsaktionen im MVP.
+- Die oeffentliche Statusseite zeigt keine Discord-IDs oder ID-Hashes an.
 
 ## Geplanter Tech Stack
 
@@ -49,8 +50,6 @@ Der Bot soll Beitritte und Austritte aus einem Discord-Testserver erfassen. Die 
 
 ## Lokale Entwicklung
 
-Geplante Befehle:
-
 ```bash
 npm install
 npm run build
@@ -59,19 +58,68 @@ npm test
 npm run dev
 ```
 
-## Minimalstart
+## Konfiguration
 
-Der Bot-Minimalstart wird in Issue #2 vorbereitet. Ziel ist nur eine lokal startbare Bot-Grundlage mit Konfigurationsvalidierung und Discord-Client-Erzeugung.
+Lege lokal eine `.env`-Datei auf Basis von `.env.example` an. Die `.env`-Datei darf nicht committet werden.
+
+Wichtige Variablen:
+
+- `DISCORD_BOT_TOKEN`
+- `DISCORD_CLIENT_ID`
+- `DISCORD_GUILD_ID`
+- `DATABASE_URL`, optional, Standard: `file:./data/discord-status.sqlite`
+- `HOST`, optional, Standard: `127.0.0.1`
+- `PORT`, optional, Standard: `3000`
+
+## Oeffentliche Statusseite
+
+Die Statusseite wird statisch ueber Fastify ausgeliefert und nutzt die Public API.
+
+Lokal starten:
+
+```bash
+npm run dev
+```
+
+Danach lokal oeffnen:
+
+- Statusseite: `http://127.0.0.1:3000/`
+- Public Member Events API: `http://127.0.0.1:3000/api/public/member-events`
+- Public Status API: `http://127.0.0.1:3000/api/public/status`
+- Healthcheck: `http://127.0.0.1:3000/health`
+
+Die Seite zeigt die letzten Join-/Leave-Events aus der Public API. Sie enthaelt Ladezustand, leeren Zustand und Fehlerzustand. Angezeigt werden nur Event-Typ, Anzeigename-Snapshot und Zeitpunkt; Discord-IDs und Hashes werden nicht im Frontend angezeigt.
+
+## Manueller UI-Test fuer die Statusseite
+
+Zuletzt manuell geprueft:
+
+- Statusseite lokal geoeffnet.
+- Join-Event durch Server-Beitritt erzeugt und auf der Statusseite angezeigt.
+- Leave-Event durch Server-Verlassen erzeugt und auf der Statusseite angezeigt.
+
+Nicht geprueft:
+
+- API-Fehlerzustand wurde nicht separat simuliert.
+
+## Aktueller Umsetzungsstand
+
+Enthalten:
+
+- Bot-Minimalstart
+- Join-/Leave-Tracking
+- SQLite-Persistenz fuer Member-Events
+- Public Status API
+- oeffentliche Statusseite
 
 Noch nicht enthalten:
 
-- Join-/Leave-Tracking
-- Datenbank
-- API
-- Statusseite
 - Adminseite
+- Regeln speichern oder bearbeiten
+- Willkommensnachricht speichern oder bearbeiten
+- Beitrittsfenster-Konfiguration
 - produktiver Betrieb
 
 ## Projektsteuerung
 
-Die Initialisierung basiert auf Issue #1. Der Bot-Minimalstart basiert auf Issue #2.
+Die Initialisierung basiert auf Issue #1. Der Bot-Minimalstart basiert auf Issue #2. Die oeffentliche Statusseite basiert auf Issue #10.
